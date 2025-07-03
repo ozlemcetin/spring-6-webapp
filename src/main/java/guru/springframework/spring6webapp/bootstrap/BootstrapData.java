@@ -47,18 +47,25 @@ public class BootstrapData implements CommandLineRunner {
             Book savedDdd = bookRepository.save(book);
             System.out.println("Gets id after saving: " + savedDdd.getId());
 
-            //Creating associations
+            //Creating associations -alter the object and then persist it
             savedDdd.setPublisher(savedPublisher);
             bookRepository.save(savedDdd);
 
-            Author author = new Author();
-            author.setFistName("Eric");
-            author.setLastName("Evans");
-            Author savedEric = authorRepository.save(author);
+            Author savedEric = null;
+            {
+                Author author = new Author();
+                author.setFistName("Eric");
+                author.setLastName("Evans");
+                savedEric = authorRepository.save(author);
 
-            //Creating associations -alter the object and then persist it
-            savedEric.getBooks().add(savedDdd);
-            authorRepository.save(savedEric);
+                //Adding book to the author
+                savedEric.getBooks().add(savedDdd);
+                authorRepository.save(savedEric);
+            }
+
+            //Adding author to the book
+            savedDdd.getAuthors().add(savedEric);
+            bookRepository.save(savedDdd);
         }
 
         {
@@ -69,18 +76,25 @@ public class BootstrapData implements CommandLineRunner {
             Book savedJ2ee = bookRepository.save(book);
             System.out.println("Gets id after saving: " + savedJ2ee.getId());
 
-            //Creating associations
+            //Creating associations -alter the object and then persist it
             savedJ2ee.setPublisher(savedPublisher);
             bookRepository.save(savedJ2ee);
 
-            Author author = new Author();
-            author.setFistName("Rod");
-            author.setLastName("Johnson");
-            Author savedRod = authorRepository.save(author);
+            Author savedRod = null;
+            {
+                Author author = new Author();
+                author.setFistName("Rod");
+                author.setLastName("Johnson");
+                savedRod = authorRepository.save(author);
 
-            //Creating associations -alter the object and then persist it
-            savedRod.getBooks().add(savedJ2ee);
-            authorRepository.save(savedRod);
+                //Adding book to the author
+                savedRod.getBooks().add(savedJ2ee);
+                authorRepository.save(savedRod);
+            }
+
+            //Adding author to the book
+            savedJ2ee.getAuthors().add(savedRod);
+            bookRepository.save(savedJ2ee);
         }
 
         System.out.println("Author count: " + authorRepository.count());
