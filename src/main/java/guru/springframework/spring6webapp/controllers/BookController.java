@@ -16,7 +16,9 @@ public class BookController {
 
     @RequestMapping("/books")
     public String getBooks(Model model) {
+
         model.addAttribute("books", bookService.findAll());
+        //Look for a view called views
         return "books";
     }
 }
