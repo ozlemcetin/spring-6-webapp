@@ -25,6 +25,17 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        Publisher savedPublisher = null;
+        {
+            Publisher publisher = new Publisher();
+            publisher.setPublisherName("My Publisher");
+            publisher.setAddress("123 Main");
+            savedPublisher = publisherRepository.save(publisher);
+
+            System.out.println("In Bootstrap");
+            System.out.println("Publisher Count: " + publisherRepository.count());
+        }
+
         //"Saves a given entity.
         // Use the returned instance for further operations
         // as the save operation might have changed the entity instance completely."
@@ -35,6 +46,10 @@ public class BootstrapData implements CommandLineRunner {
 
             Book savedDdd = bookRepository.save(book);
             System.out.println("Gets id after saving: " + savedDdd.getId());
+
+            //Creating associations
+            savedDdd.setPublisher(savedPublisher);
+            bookRepository.save(savedDdd);
 
             Author author = new Author();
             author.setFistName("Eric");
@@ -54,6 +69,10 @@ public class BootstrapData implements CommandLineRunner {
             Book savedJ2ee = bookRepository.save(book);
             System.out.println("Gets id after saving: " + savedJ2ee.getId());
 
+            //Creating associations
+            savedJ2ee.setPublisher(savedPublisher);
+            bookRepository.save(savedJ2ee);
+
             Author author = new Author();
             author.setFistName("Rod");
             author.setLastName("Johnson");
@@ -64,17 +83,8 @@ public class BootstrapData implements CommandLineRunner {
             authorRepository.save(savedRod);
         }
 
-        System.out.println("In Bootstrap");
         System.out.println("Author count: " + authorRepository.count());
         System.out.println("Book count: " + bookRepository.count());
 
-        {
-            Publisher publisher = new Publisher();
-            publisher.setPublisherName("My Publisher");
-            publisher.setAddress("123 Main");
-            publisherRepository.save(publisher);
-
-            System.out.println("Publisher Count: " + publisherRepository.count());
-        }
     }
 }

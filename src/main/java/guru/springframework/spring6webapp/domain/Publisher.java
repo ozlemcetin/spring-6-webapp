@@ -1,13 +1,13 @@
 package guru.springframework.spring6webapp.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 //the @Entity annotation is required for JPA to detect the class as an entity.
+//Yes, @Entity is needed to tell JPA that data for Publisher objects will be persisted to the database.
 @Entity
 public class Publisher {
 
@@ -19,6 +19,18 @@ public class Publisher {
     private String city;
     private String state;
     private String zipCode;
+
+    //One publisher to many books
+    @OneToMany(mappedBy = "publisher")
+    private Set<Book> books = new HashSet<Book>();
+
+    public Set<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(Set<Book> books) {
+        this.books = books;
+    }
 
     public Long getId() {
         return id;
