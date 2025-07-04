@@ -14,6 +14,10 @@ public class BookServiceImpl implements BookService {
         this.bookRepository = bookRepository;
     }
 
+    /*
+     @Override is considered a best practice to help prevent you
+     from accidentally implementing a method not defined by the interface.
+     */
     @Override
     public Iterable<Book> findAll() {
         return bookRepository.findAll();

@@ -5,7 +5,7 @@ import guru.springframework.spring6webapp.domain.Book;
 import guru.springframework.spring6webapp.domain.Publisher;
 import guru.springframework.spring6webapp.repositories.AuthorRepository;
 import guru.springframework.spring6webapp.repositories.BookRepository;
-import guru.springframework.spring6webapp.repositories.PulisherRepository;
+import guru.springframework.spring6webapp.repositories.PublisherRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ public class BootstrapData implements CommandLineRunner {
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
-    private final PulisherRepository publisherRepository;
+    private final PublisherRepository publisherRepository;
 
-    public BootstrapData(AuthorRepository authorRepository, BookRepository bookRepository, PulisherRepository publisherRepository) {
+    public BootstrapData(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
@@ -36,6 +36,14 @@ public class BootstrapData implements CommandLineRunner {
             System.out.println("Publisher Count: " + publisherRepository.count());
         }
 
+        Author savedEric = null;
+        {
+            Author author = new Author();
+            author.setFirstName("Eric");
+            author.setLastName("Evans");
+            savedEric = authorRepository.save(author);
+        }
+
         //"Saves a given entity.
         // Use the returned instance for further operations
         // as the save operation might have changed the entity instance completely."
@@ -51,21 +59,21 @@ public class BootstrapData implements CommandLineRunner {
             savedDdd.setPublisher(savedPublisher);
             bookRepository.save(savedDdd);
 
-            Author savedEric = null;
-            {
-                Author author = new Author();
-                author.setFistName("Eric");
-                author.setLastName("Evans");
-                savedEric = authorRepository.save(author);
-
-                //Adding book to the author
-                savedEric.getBooks().add(savedDdd);
-                authorRepository.save(savedEric);
-            }
-
             //Adding author to the book
             savedDdd.getAuthors().add(savedEric);
             bookRepository.save(savedDdd);
+
+            //Adding book to the author
+            savedEric.getBooks().add(savedDdd);
+            authorRepository.save(savedEric);
+        }
+
+        Author savedRod = null;
+        {
+            Author author = new Author();
+            author.setFirstName("Rod");
+            author.setLastName("Johnson");
+            savedRod = authorRepository.save(author);
         }
 
         {
@@ -80,21 +88,15 @@ public class BootstrapData implements CommandLineRunner {
             savedJ2ee.setPublisher(savedPublisher);
             bookRepository.save(savedJ2ee);
 
-            Author savedRod = null;
-            {
-                Author author = new Author();
-                author.setFistName("Rod");
-                author.setLastName("Johnson");
-                savedRod = authorRepository.save(author);
-
-                //Adding book to the author
-                savedRod.getBooks().add(savedJ2ee);
-                authorRepository.save(savedRod);
-            }
-
             //Adding author to the book
             savedJ2ee.getAuthors().add(savedRod);
+            savedJ2ee.getAuthors().add(savedEric);
             bookRepository.save(savedJ2ee);
+
+            //Adding book to the author
+            savedRod.getBooks().add(savedJ2ee);
+            savedEric.getBooks().add(savedJ2ee);
+            authorRepository.save(savedRod);
         }
 
         System.out.println("Author count: " + authorRepository.count());
